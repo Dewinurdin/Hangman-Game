@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hangman</title>
+</head>
+<body>
+
+	<h1>Hangman</h1>
+		<p id="answerField"></p>
+			<form name="answerInput">
+			<input name="answerBox" type="text" size="5" maxlength="1">
+			<input name="ratebutton" type="button" value="Guess" onClick="checkCharacter()">
+
+		<p id="wrongLetter">Wrong Letters:</p>
+			<img src="http://www.writteninpencil.de/Projekte/Hangman/hangman0.png" id="hangman"><br />
+			<input name="refresh" type="button" value="New Game" onClick="location.reload()">
+		</form>
+
+
+<script type="text/javascript">
+	
+	var wordArr = [
+["T", "R", "E", "E", "H", "O", "U", "S", "E"],
+  ["J","A","V","A","S","C","R","I","P","T"],
+  ["W","E","B","D","E","S","I","G","N"],
+  ["E","D","U","C","A","T","I","O","N"],
+  ["C","H","O","C","O","L","A","T","E"],
+  ["G","E","R","M","A","N","Y"]
+]
+var random = Math.floor((Math.random()*(wordArr.length-1))); 
+
+var wordBank = wordArr[random]; // the word to guess will be chosen from the array above
+var ratewort = new Array(wordBank.length);
+var fehler = 0;
+
+// every letter in the word is symbolized by an underscore in the guessfield
+for (var i = 0; i < ratewort.length; i++){
+	ratewort[i] = "_ ";
+}
+
+// prints the guessfield
+function printGuessfield(){
+	for (var i = 0; i < ratewort.length; i++){
+	var answerField = document.getElementById("answerField");
+	var letter = document.createTextNode(ratewort[i]);
+	answerField.appendChild(letter);
+	}
+}
+
+//checks if the the letter provided by the user matches one or more of the letters in the word
+var checkCharacter = function(){
+	var f = document.answerInput; 
+	var b = f.elements["answerBox"]; 
+	var letterInputted = b.value; // the letter provided by the user
+	letterInputted = letterInputted.toUpperCase();
+	for (var i = 0; i < wordBank.length; i++){
+		if(wordBank[i] === letterInputted){
+			ratewort[i] = letterInputted + " ";
+			var result = true;
+		}
+	b.value = "";
+	}
+	
+	//deletes the guessfield and replaces it with the new one
+	var answerField = document.getElementById("answerField");
+	answerField.innerHTML=""; 
+	printGuessfield();
+	
+	// if a guessed letter is not in the word, the letter will be put on the "wrong letters"-list and hangman grows
+	if(!result){
+		var wrongLetter = document.getElementById("wrongLetter");
+		var letter = document.createTextNode(" " + letterInputted);
+		wrongLetter.appendChild(letter); 
+		fehler++;
+		var hangman = document.getElementById("hangman");
+    hangman.src = "http://www.writteninpencil.de/Projekte/Hangman/hangman" + fehler + ".png";
+	}
+	
+	//checks if all letters have been found
+	var fertig = true;
+	for (var i = 0; i < ratewort.length; i++){
+		if(ratewort[i] === "_ "){
+			fertig = false;
+		}
+	}
+	if(fertig){
+		window.alert("You win!");
+	}
+	
+	//once you got six wrong letters, you lose
+	if(fehler === 6){
+		window.alert("Uh...I guess you're dead now.");
+	}
+}
+
+function init(){
+	printGuessfield();
+}
+
+window.onload = init;
+</script>
