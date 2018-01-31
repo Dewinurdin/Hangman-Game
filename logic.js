@@ -13,85 +13,72 @@ var lossCount = 0;
 var guessesLeft = 9;
 
 // FUNCTIONS
-function startGame() {
-	selectedWord = wordOptions[Math.floor(Math.random() * wordOptions.length)];
-	lettersinWord = selectedWord.split("");
-	numBlanks = lettersinWord.length;
+function startGame(){
+	selecedWord = wordOptions[Math.floor(Math.random() * wordOptions.length)];
+	console.log(selecedWord);
 
-	//Reset
+	lettersinWord = selecedWord.split("");
+	console.log(lettersinWord);
+
+	numBlanks = lettersinWord.length;
+	console.log(numBlanks);
+
+	//RESET
 	guessesLeft = 9;
 	wrongLetters = [];
 	blanksAndSucesses = [];
 
-	for (var i=0; i<numBlanks; i++){
+	for (var i = 0; i < numBlanks; i++){
 		blanksAndSucesses.push("_");
+		console.log(blanksAndSucesses);
 	}
+	//Update HTML
+	document.getElementById("wordToGuess").innerHTML = blanksAndSucesses.join(" ");
+	document.getElementById("numGuesses").innerHTML = guessesLeft;
+	document.getElementById("winCounter").innerHTML = winCount;
+	document.getElementById("lossCounter").innerHTML = lossCount;
+};
 
-	//Change HTML to reflect round conditions
-	document.getElementbyID("wordToGuess").innerHTML = blanksAndSucesses.join(" ");
-	document.getElementbyID("numGuesses").innerHTML = guessesLeft;
-	document.getElementbyID("winCounter").innerHTML = winCount;
-	document.getElementbyID("lossCounter").innerHTML = lossCount;
-
-	//Testing / Debugging
-	console.log(selectedWord);
-	console.log(lettersinWord);
-	console.log(numBlanks);
-	console.log(blanksAndSucesses);
-
-}
-
-function checkLetter(letter) {
-	//Check if letter exists in code at all
+function checkLetter(letter){
 	var isLetterInWord = false;
-	for (var i=0; i<numBlanks; i++) {
-		if(selectedWord[i] == letter){
+	for (var i = 0; i < numBlanks; i++){
+		if(selecedWord[i] == letter){
 			isLetterInWord = true;
 		}
 	}
-	// Check where in word letter exists, the populate out blanksAndSuccesses array
-	if(isLetterInWord) {
-		for (var i = 0; i<numBlanks; i++) {
-			if(selectedWord[i] == letter) {
-				blanksAndSuccesses[i] = letter;
+	if(isLetterInWord){
+		for (var i = 0; i < numBlanks; i++){
+			if(selecedWord[i] == letter){
+				blanksAndSucesses[i] = letter;
+			}
 		}
+	} else {
+		wrongLetters.push(letter);
+		guessesLeft--;
 	}
-}
-
-//letter wasn't foound
-else {
-	wrongLetters.push(letter);
-	guessesLeft--;
-}
+};
 
 function roundComplete(){
 	console.log("Win Count:" + winCount + "| lossCount:" + lossCount + "| Guesses Left" + numGuesses);
-	
-	//Update the HTML to reflect the most recent count stats
-	document.getElementbyID("numGuesses").innerHTML = guessesLeft;
-	document.getElementbyID("wordToGuess").innerHTML = blanksAndSuccesses.join(" ");
-	document.getElementbyID("wrongGuesses").innerHTML = wrongLetters.join(" ");
-	// Check if User won
-	if (lettersinWord.toString() == blanksAndSuccesses.toString()) {
+
+	document.getElementById("numGuesses").innerHTML = guessesLeft;
+	document.getElementById("wordToGuess").innerHTML = blanksAndSucesses.join(" ");
+	document.getElementById("wrongGuesses").innerHTML = wrongLetters.join(" ");
+
+	if (lettersinWord.toString() == blanksAndSucesses.toString()){
 		winCount++;
-		alert("you won!");
+		alert("You Won!");
 
-		//update the win counter in the HTML
-		document.getElementbyID("winCounter").innerHTML = winCount;
-
+		//Update in HTML Win Count
+		document.getElementById("winCounter").innerHTML = winCount;
 		startGame();
-	}
-	// Check if user lost
-	else if (guessesLeft == 0){
+	} else if (guessesLeft == 0){
 		lossCount++;
 		alert("You Lost!");
-
-		//Update the HTML
-		document.getElementbyID("lossCounter").innerHTML = lossCount;
-
+		document.getElementById("lossCounter").innerHTML = lossCount;
 		startGame();
 	}
-}
+};
 
 // MAIN PROCESS
 //Initiates the code the first time
@@ -100,7 +87,8 @@ startGame();
 //Register keyclicks
 
 document.onkeyup = function(event) {
-	var letterGuessed = String.fromCharCode(event.keycode).toLowerCase();
+	var letterGuessed = String.fromCharCode(event.keyCode).toLowerCase();
+	console.log(letterGuessed);
 	checkLetter(letterGuessed);
-	roundComplete;
+	roundComplete();
 };
